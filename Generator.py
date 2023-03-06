@@ -6,7 +6,7 @@ import numpy as np
 import tqdm
 from imgaug import augmenters as iaa
 from imgaug.augmentables.batches import UnnormalizedBatch
-from tensorflow import keras
+import keras
 
 
 class Cifar10_Generator(keras.utils.Sequence):
@@ -182,10 +182,10 @@ class Tiny_imagenet_Generator(keras.utils.Sequence):
             else:
                 label = keras.utils.to_categorical(label, num_classes=self.num_classes)
                 batch_cls[i] = label
-            cv2.imshow('test', img)
-            cv2.imshow('unaug', augmented_data[0].images_unaug[i])
-            if cv2.waitKey(0) == ord('q'):
-                break
+            # cv2.imshow('test', img)
+            # cv2.imshow('unaug', augmented_data[0].images_unaug[i])
+            # if cv2.waitKey(0) == ord('q'):
+            #     break
 
         return batch_images, batch_cls
 
