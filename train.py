@@ -27,10 +27,15 @@ if __name__ == "__main__":
     parser.add_argument('--dataset', default='tinyimagenet', type=str)
     parser.add_argument('--weight_decay', default=0.0005, type=float)
     parser.add_argument('--logdir', default='./logs', type=str)
+    parser.add_argument('--save', default=True, type=bool)
     
     args = parser.parse_args()
     
     run_logdir = logger.get_run_logdir(args.logdir)
+    if args.save:
+        model_save_path = './saved_models/' + args.name + '-' + args.dataset + '_final.h5'
+        if not os.path.exists('./saved_models'):
+            os.makedirs('./saved_models', exist_ok=True)
     
     input_shape = (224, 224, 3)
     num_classes = 200
@@ -115,5 +120,6 @@ if __name__ == "__main__":
                         steps_per_epoch=len(train_batch),
                         validation_steps=len(test_batch),
                         verbose=1)
-    
+    if args.save:
+        model.save(model_save_path)
     
