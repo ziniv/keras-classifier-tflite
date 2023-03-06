@@ -56,25 +56,36 @@ if __name__ == "__main__":
                        ]),
                             iaa.Sometimes(0.5, iaa.Fliplr(0.5)),
             ]
-    
-    train_batch = Tiny_imagenet_Generator(batch_size=args.batch,
-                                        data_path=data_path,
-                                        augs=augments,
-                                        is_train=True,
-                                        input_shape = input_shape,
-                                        num_classes=num_classes
-                                        )
-    test_batch = Tiny_imagenet_Generator(batch_size=args.batch,
-                                        data_path=data_path,
-                                        augs=[],
-                                        is_train=False,
-                                        input_shape = input_shape,
-                                        num_classes=num_classes
-                                        )
+    if args.dataset.lower() == 'tinyimagenet':
+        train_batch = Tiny_imagenet_Generator(batch_size=args.batch,
+                                            data_path=data_path,
+                                            augs=augments,
+                                            is_train=True,
+                                            input_shape = input_shape,
+                                            num_classes=num_classes
+                                            )
+        test_batch = Tiny_imagenet_Generator(batch_size=args.batch,
+                                            data_path=data_path,
+                                            augs=[],
+                                            is_train=False,
+                                            input_shape = input_shape,
+                                            num_classes=num_classes
+                                            )
+    elif args.dataset.lower() == 'cifar':
+        train_batch = Cifar10_Generator(batch_size=args.batch,
+                                            data_path=data_path,
+                                            augs=augments,
+                                            is_train=True,
+                                            )
+        test_batch = Cifar10_Generator(batch_size=args.batch,
+                                            data_path=data_path,
+                                            augs=[],
+                                            is_train=False,
+                                            )
     l2_reg = keras.regularizers.l2(args.weight_decay)
     input_tensor = keras.layers.Input(input_shape)
     
-    base_model = models.ResNet18(inputs = input_tensor, classes=200, include_top=False)
+    base_model = models.ResNet18(inputs = input_tensor, classes=num_classes, include_top=False)
     
     x = base_model.output[-1]
     x = GlobalAveragePooling2D()(x)
@@ -90,7 +101,7 @@ if __name__ == "__main__":
     
     callbacks = [cosine_annealing.CosineAnnealingScheduler(1e-3, verbose=1),
                     # keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=3, verbose=1),
-                    keras.callbacks.ModelCheckpoint(filepath='./saved_models/' + args.name + '_{epoch:05d}.h5',
+                    keras.callbacks.ModelCheckpoint(filepath='./saved_models/' + args.name + '-' + args.dataset + '_{epoch:05d}.h5',
                                                     verbose=1,
                                                     period=5),
                     keras.callbacks.TensorBoard(run_logdir),
