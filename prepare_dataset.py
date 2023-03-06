@@ -8,9 +8,10 @@ import zipfile
 
 def get_TinyImageNet(extract, output):
     if extract:
-        url = "http://cs231n.stanford.edu/tiny-imagenet-200.zip"
         output_file = os.path.join(output, "tiny-imagenet-200.zip")
-        subprocess.run(["wget", url, "-O", output_file])
+        if not os.path.exists(output_file):
+            url = "http://cs231n.stanford.edu/tiny-imagenet-200.zip"
+            subprocess.run(["wget", url, "-O", output_file])
         with zipfile.ZipFile(output_file, 'r') as zip_ref:
             zip_ref.extractall(path=output)
         
