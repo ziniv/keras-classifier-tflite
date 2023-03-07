@@ -35,10 +35,17 @@ if __name__ == "__main__":
     
     filename = args.input.split('/')[-1].split('.h5')[0]
     restore_filename = os.path.join(args.output, filename+'_restore.h5')
+    output_filename = os.path.join(args.output, filename+'.tflite')
+    
     model = get_resnet18((32, 32, 3), 10, 'resnet18')
     model.load_weights(args.input)
     model.save(restore_filename)
     
-    model = keras.models.load_model(restore_filename, custom_objects = model)
+    model = keras.models.load_model(restore_filename)
+    converter = tf.lite.TFLiteConverter.from_keras_model(model)
+    tflite_model = converter.convert()
+    
+    with open(output_filename, 'wb') as f:
+        f.write(tflite_model)
     
     
