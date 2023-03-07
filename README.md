@@ -3,7 +3,9 @@
 ## 1. setting  
     pip install -r requirements.txt  
 
-    You can choice cifar10 datasets, if you want to train classification model quickly because it is small. ImageNet, on the other hand, it is a much larger dataset. ImageNet has become a standard benchmark dataset for evaluating the performance of image classification.
+    You can choice cifar10 datasets, if you want to train classification model quickly because it is small. 
+    ImageNet, on the other hand, it is a much larger dataset. 
+    ImageNet has become a standard benchmark dataset for evaluating the performance of image classification.
 
     python -m prepare_dataset --name tinyimagenet --extract True --output ./dataset  
 
